@@ -1,8 +1,10 @@
+# This awk script is used to format logs as an HTML <table>
+#
 # Copyright (c) 2011 Lance Lovette. All rights reserved.
 # Licensed under the BSD License.
 # See the file LICENSE.txt for the full license text.
 #
-# This awk script is used to format logs as an HTML <table>
+# Available from https://github.com/lovette/logalert
 
 # Escape unsafe characters
 function htmlsafe(s)

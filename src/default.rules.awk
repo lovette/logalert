@@ -1,8 +1,10 @@
+# This awk script is used to process rules
+#
 # Copyright (c) 2011 Lance Lovette. All rights reserved.
 # Licensed under the BSD License.
 # See the file LICENSE.txt for the full license text.
 #
-# This awk script is used to process rules
+# Available from https://github.com/lovette/logalert
 
 BEGIN {
 	regexprefix = ""
