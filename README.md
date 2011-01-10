@@ -66,7 +66,7 @@ download the tarball and add a "logtail" target to the Makefile.
 Usage
 ---
 
-	logalert [OPTIONS]
+	logalert [OPTION]...
 
 Run the command with `--help` argument or view the logalert(8) man page to see available OPTIONS.
 
