@@ -1,0 +1,2 @@
+# Include the full path of each log file to check
+/var/log/mongo/mongod.log

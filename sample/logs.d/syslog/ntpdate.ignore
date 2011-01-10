@@ -1,0 +1,6 @@
+# Include regular expressions for each log message to ignore (even for alerts)
+
+[logalert:regex:prefix=ntpdate\[[0-9]+\]: ]
+
+step time server
+adjust time server

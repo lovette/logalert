@@ -1,0 +1,10 @@
+# Crontab entries for the logalert package
+#
+# Copy to /etc/cron.d/logalert to run logalert at boot
+# and every 5 minutes.
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+@reboot      root  nice -n10 /usr/sbin/logalert -R
+*/5 * * * *  root  nice -n10 /usr/sbin/logalert

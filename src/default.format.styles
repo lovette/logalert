@@ -1,0 +1,9 @@
+body, td {
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+font-size: 10pt;
+}
+
+td {
+vertical-align: top;
+padding-right: 5pt;
+}

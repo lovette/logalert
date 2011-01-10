@@ -1,0 +1,5 @@
+# Include regular expressions for each log message that should trigger an alert email
+Accepted password for
+session opened for user
+session closed for user
+authentication failure

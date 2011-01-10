@@ -1,0 +1,14 @@
+
+logtail:
+	# Create the directories
+	install -d $(DESTDIR)/$(SBINDIR)
+	install -d $(DESTDIR)/$(SHAREDIR)
+
+	# Install the scripts
+	install -m 755 src/logtail $(DESTDIR)/$(SBINDIR)/
+	install -m 755 src/logtail2 $(DESTDIR)/$(SBINDIR)/
+	install -m 755 src/detectrotate/* $(DESTDIR)/$(SHAREDIR)/
+	
+	# Install man pages
+	gzip -c docs/logtail.8 > /usr/share/man/man8/logtail.8.gz
+	gzip -c docs/logtail2.8 > /usr/share/man/man8/logtail2.8.gz
