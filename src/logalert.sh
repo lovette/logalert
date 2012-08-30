@@ -15,7 +15,7 @@ LOGALERT_VER="1.0.0"
 EVALONEXIT=( )
 TEMPFILES=( )
 TERMWIDTH=25
-GETOPTS="ac:C:e:E:f:g:hH:m:oOr:Rs:S:tTuvV"
+GETOPTS="ac:C:e:E:f:Fg:hH:m:oOr:Rs:S:tTuvV"
 HOSTNAME=$(hostname)
 SYSADMIN=$(id -un)
 CONFFILE=""
@@ -29,6 +29,7 @@ GETOPT_KEEPTEMP=0
 GETOPT_RESET=0
 GETOPT_DELETESTATE=0
 GETOPT_GROUPS=( )
+GETOPT_HOSTNAMEINFROM=0
 
 # Config file options
 CONFDIR="/etc/logalert"
@@ -42,6 +43,7 @@ FOOTERPATH=
 SUBJECTHOSTNAME="$HOSTNAME"
 SUBJECTPREPEND=
 SUBJECTAPPEND=
+SYSADMINFROMNAME="Logalert"
 SYSADMINFROM="$SYSADMIN@$HOSTNAME"
 SYSADMINTO="$SYSADMIN@$HOSTNAME"
 LOGTAILCMD="logtail2"
@@ -161,15 +163,22 @@ function emailreport()
 	local awkformatpath="$loggroupdir/format.awk"
 	local stylespath="$loggroupdir/format.styles"
 	local subject=
+	local sender=
 
 	# Use log group specific formatting if available
 	[ -s "$awkformatpath" ] || awkformatpath="$FORMATAWKPATH"
 	[ -s "$stylespath" ] || stylespath="$STYLESPATH"
 
+	# Build sender
+	sender="$SYSADMINFROMNAME"
+	[ $GETOPT_HOSTNAMEINFROM -eq 1 ] && sender="$sender $SUBJECTHOSTNAME"
+	sender="$sender <$SYSADMINFROM>"
+
 	# Build subject
 	[ -n "$SUBJECTPREPEND" ] && subject="${SUBJECTPREPEND}${subject} "
 	[ $GETOPT_REBOOT -eq 1 ] && subject="${subject}[REBOOT] "
-	subject="${subject}${reportsubject} for $loggroupname @ $SUBJECTHOSTNAME"
+	subject="${subject}${reportsubject} for $loggroupname"
+	[ $GETOPT_HOSTNAMEINFROM -eq 0 ] && subject="${subject} @ ${SUBJECTHOSTNAME}"
 	[ -n "$SUBJECTAPPEND" ] && subject="${subject} ${SUBJECTAPPEND}"
 
 	echo_verbose 2 "...formatting $reporttype email with $awkformatpath"
@@ -179,7 +188,7 @@ function emailreport()
 
 	# Generate email message
 	(
-	echo "From: Logalert <$SYSADMINFROM>"
+	echo "From: $sender"
 	echo "To: $SYSADMINTO"
 	echo "Subject: $subject"
 	echo "X-Logalert-Ver: $LOGALERT_VER"
@@ -438,9 +447,10 @@ function usage()
 	echo "  -e TEXT        Override default subject prepend text"
 	echo "  -E TEXT        Override default subject append text"
 	echo "  -f FILE        Override default format awk script"
+	echo "  -F             Include hostname in email sender instead of subject"
 	echo "  -g NAME        Scan only this log group or directory (specify -g for each group)"
 	echo "  -h, --help     Show this help and exit"
-	echo "  -H HOST        Override hostname in email subject"
+	echo "  -H HOST        Override hostname in email sender/subject"
 	echo "  -m EMAIL       Override email recipient"
 	echo "  -o             Print email messages to stdout; no email will be sent"
 	echo "  -O             Suppress all output; no email will be sent"
@@ -524,6 +534,7 @@ do
 	e  ) SUBJECTPREPEND="$OPTARG";;
 	E  ) SUBJECTAPPEND="$OPTARG";;
 	f  ) FORMATAWKPATH=$(readlink -f "$OPTARG");;
+	F  ) GETOPT_HOSTNAMEINFROM=1;;
 	g  ) GETOPT_GROUPS=( "${GETOPT_GROUPS[@]}" "$OPTARG" );;
 	H  ) SUBJECTHOSTNAME="$OPTARG";;
 	m  ) SYSADMINTO="$OPTARG";;
