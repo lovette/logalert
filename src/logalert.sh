@@ -274,7 +274,7 @@ function scangroup()
 	if [ -s "$ignorepath" ]; then
 		tempfiles_add "$unexpectedout"
 		$GREPCMD -v -f "$ignorepath" $logtailout > $unexpectedout
-		[ $? -gt 1 ] && logalert_die
+		[ $? -gt 1 ] && logalert_die "Error scanning log group: $loggroupname"
 	else
 		unexpectedout="$logtailout"
 	fi
@@ -284,11 +284,11 @@ function scangroup()
 	if [ -s "$alertspath" ]; then
 		tempfiles_add "$alertsout"
 		$GREPCMD -f "$alertspath" "$unexpectedout" > $alertsout
-		[ $? -gt 1 ] && logalert_die
+		[ $? -gt 1 ] && logalert_die "Error scanning log group: $loggroupname"
 
 		tempfiles_add "$noticesout"
 		$GREPCMD -v -f "$alertspath" "$unexpectedout" > $noticesout
-		[ $? -gt 1 ] && logalert_die
+		[ $? -gt 1 ] && logalert_die "Error scanning log group: $loggroupname"
 	else
 		noticesout="$unexpectedout"
 	fi
@@ -385,7 +385,7 @@ function buildgroupstate()
 	done
 
 	[ -s "$logfilespath" ] || logalert_die "$loggroupdir: no log files to scan (no *.logfiles?)"
-	
+
 	# Build the combined ignore file if it's out of date
 	for filepath in $loggroupdir/*.ignore
 	do
@@ -395,7 +395,7 @@ function buildgroupstate()
 			break
 		fi
 	done
-	
+
 	# Build the combined alerts file if it's out of date
 	for filepath in $loggroupdir/*.alert
 	do
@@ -405,7 +405,7 @@ function buildgroupstate()
 			break
 		fi
 	done
-	
+
 	[ $built -eq 0 ] && echo_verbose "...nothing to do"
 }
 
