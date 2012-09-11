@@ -257,7 +257,10 @@ function scangroup()
 	do
 		echo_verbose "...tailing $logfilepath"
 
-		logfilename=$(basename "$logfilepath")
+		# Convert full path of logfile to a filename by stripping first / and
+		# replacing the others with a hyphen.
+		logfilename=${logfilepath#/}
+		logfilename=${logfilename//\//-}
 		offsetfile="$logvardir/$logfilename.offset"
 
 		# We can skip empty logs that have never been checked
